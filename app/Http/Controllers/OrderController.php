@@ -29,7 +29,7 @@ class OrderController extends Controller
                 $product = Product::find($item['product_id']);
 
                 if (!$product || $product->stock < $item['qty']) {
-                    continue; // skip produk tidak valid atau stok kurang
+                    continue;
                 }
 
                 $product->decrement('stock', $item['qty']);
@@ -95,6 +95,20 @@ class OrderController extends Controller
             DB::rollBack();
             return response()->json(['error' => 'Gagal checkout', 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function show_by_user($user_id)
+    {
+        $orders = Order::with(['user', 'details.product'])
+            ->where('user_id', $user_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($orders->isEmpty()) {
+            return response()->json(['message' => 'Belum ada pesanan untuk user ini.'], 200);
+        }
+
+        return response()->json($orders);
     }
 
 

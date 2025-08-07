@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 // Public
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/order-user/{id}', [OrderController::class, 'show_by_user']);
 
 // Protected Routes
 Route::middleware('auth:api')->group(function () {
